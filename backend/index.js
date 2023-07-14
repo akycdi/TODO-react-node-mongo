@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken')
+const path = require('path')
 require('dotenv').config()
 const cors = require('cors')
 
@@ -15,6 +16,11 @@ app.use(bodyParser.json());
 app.use('/user', userRoutes)
 app.use('/todo', todoRoutes)
 
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 const mongoose = require('mongoose')
 
