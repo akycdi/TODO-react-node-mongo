@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const db = require('../index')
 
 const Schema = mongoose.Schema;
 
@@ -8,6 +9,5 @@ const userSchema = new Schema({
     todo: Array
 })
 
-const user = mongoose.model("Users", userSchema)
-
+const user=mongoose.model("Users",userSchema);
 module.exports = user;

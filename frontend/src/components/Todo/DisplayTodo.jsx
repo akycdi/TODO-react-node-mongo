@@ -24,8 +24,8 @@ function DisplayTodo({ dataChanged }) {
         fetch("http://localhost:3000/todo/getTodos", {
             method: "GET",
             headers: {
-                username: localStorage.getItem("user"),
                 "content-type": "application/json",
+                username: localStorage.getItem("user"),
                 authorization: "Bearer " + localStorage.getItem("token"),
             },
         })

@@ -43,56 +43,71 @@ const getTodos = async (req, res) => {
     });
 }
 
-const deleteTodo = (req, res) => {
+const deleteTodo = async (req, res) => {
     const id = parseInt(req.params.id);
-    let index = TODO.findIndex(x => x.id === id)
-
-    if (index === -1) {
-        res.status(404).json({
-            message: "TODO not found",
-            id: id
-        });
+    const getUser = await user.findOne({ username: req.user.username })
+    if (!getUser) {
+        return res.status(404).json({
+            message: "No User"
+        })
     }
-    else {
-        TODO.splice(index, 1);
-        res.status(200).send({
-            TODO: TODO
-        });
+    try {
+        const todos = getUser.todo;
+        let index = -1;
+        for (let i = 0; i < todos.length; i++) {
+            if (todos[i].id === id) {
+                index = i;
+                break;
+            }
+        }
+        getUser.todo.splice(index, 1)
+        getUser.save();
+        res.json({
+            TODO: todos
+        })
+    }
+    catch (error) {
+        console.log(error);
     }
 }
 
 
-const updateTodo = (req, res) => {
+const updateTodo = async (req, res) => {
     const id = parseInt(req.params.id);
-    let index = TODO.findIndex(x => x.id === id)
-
-    if (index === -1) {
-        res.status(404).json({
-            message: "TODO not found",
-            id: id
-        });
+    const { title, description } = req.body;
+    const getUser = await user.findOne({ username: req.user.username })
+    if (!getUser) {
+        return res.status(404).json({
+            message: "No User"
+        })
     }
-    else {
-        TODO[index].title = req.body.title;
-        TODO[index].description = req.body.description;
-        res.status(200).send({
-            TODO: TODO
-        });
+    try {
+        const todos = getUser.todo;
+        let index = -1;
+        for (let i = 0; i < todos.length; i++) {
+            if (todos[i].id === id) {
+                index = i;
+                break;
+            }
+        }
+        getUser.todo[index].title = title ? title : getUser.todo[index].title;
+        getUser.todo[index].description = description ? description : getUser.todo[index].description;
+        getUser.save();
+        res.json({
+            TODO: todos
+        })
+    }
+    catch (error) {
+        console.log(error);
     }
 }
 
-const isAuthenticated = (req, res) => {
+const isAuthenticated = async (req, res) => {
     let username = req.user.username;
     let password = req.user.password;
 
-    let isUser = false;
-
-    USERS.forEach(element => {
-        if (element.username === username && element.password === password) {
-            isUser = true;
-        }
-    })
-    if (isUser) {
+    const getUser = await user.findOne({ username: username, password: password })
+    if (getUser) {
         res.json({
             message: true,
             user: req.user.username
@@ -105,10 +120,13 @@ const isAuthenticated = (req, res) => {
     }
 }
 
-const getNumberOfTodos = (req, res) => {
-    res.json({
-        count: TODO.length
-    });
+const getNumberOfTodos = async (req, res) => {
+    const getUser = await user.findOne({ username: req.user.username, password: req.user.password })
+    if (getUser) {
+        res.json({
+            count: getUser.todo.length
+        });
+    }
 }
 
 module.exports = {

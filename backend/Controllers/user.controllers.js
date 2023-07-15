@@ -11,34 +11,29 @@ const userSignup = async (req, res) => {
     let data = req.headers;
     try {
         const userFound = await user.findOne({ username: data.username })
-
         if (userFound) {
             res.status(403).json({
                 message: "User all ready exsits"
             }).send()
             return
         }
-
         const userSchema = await user.create({
             username: data.username,
             password: data.password
         })
-
         await userSchema.save();
-
         res.json({
             message: 'Created username',
             id: data.id,
         })
     } catch (error) {
-        console.log("Error");
+        console.log(error);
     }
 }
 
 const userLogin = async (req, res) => {
 
     const { username, password } = req.body;
-    console.log(req.body)
     if (!username || !password) {
         return res.status(403).json({
             message: "Data Null"
