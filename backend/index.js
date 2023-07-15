@@ -12,6 +12,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 app.use(bodyParser.json());
+app.use(express.urlencoded({ extended : false }))
 
 app.use('/user', userRoutes)
 app.use('/todo', todoRoutes)
@@ -22,20 +23,14 @@ app.use('/todo', todoRoutes)
 //     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 // });
 
+
 const mongoose = require('mongoose')
-
-// const mongoString = process.env.DATABASE_URL
-// mongoose.connect(mongoString);
-// const database = mongoose.connection
-
-// database.on('error', (error) => {
-//     console.log(error)
-// })
-
-// database.once('connected', () => {
-//     console.log('Database Connected');
-// })
-
+const mongoString = process.env.DATABASE_URL
+mongoose.connect(mongoString).then(() => {
+    console.log("data base connected");
+}).catch((err) => {
+    console.log(err);
+});
 
 const TODO = [];
 

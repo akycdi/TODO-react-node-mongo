@@ -11,11 +11,13 @@ function Login() {
         fetch("http://localhost:3000/user/login", {
             method: "POST",
             headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+            body: JSON.stringify({
                 "username": localStorage.getItem("user"),
-                "content-type": "application/json",
-                "authorization": "Bearer " + localStorage.getItem("token"),
                 "password": password
-            }
+            }),
         }).then(loginCallback)
     }
 
