@@ -1,16 +1,45 @@
 let TODO = []
-const createTodo = (req, res) => {
-    const data = req.body;
-    data.id = Date.now();
-    TODO.push(data);
-    res.json({
-        message: 'Added Todo'
-    })
+
+const user = require('../Models/user')
+
+const createTodo = async (req, res) => {
+    const { title, description } = req.body;
+
+    if (!title || !description) {
+        res.status(404).json({
+            message: "Title or description Null"
+        })
+    }
+    try {
+        const getUser = await user.findOne({ username: req.user.username })
+        if (!getUser) {
+            res.status(404).json({
+                message: "No User"
+            })
+        }
+        getUser.todo.push({ id: Date.now(), title, description })
+        await getUser.save();
+
+        res.json({
+            todo: getUser.todo
+        })
+
+    } catch (error) {
+        console.log(error);
+    }
 }
 
-const getTodos = (req, res) => {
+const getTodos = async (req, res) => {
+    const getUser = await user.findOne({ username: req.user.username })
+
+    if (!getUser) {
+        res.status(404).json({
+            message: "No User"
+        })
+    }
+    const todos = getUser.todo
     res.json({
-        todo: TODO
+        todo: todos
     });
 }
 

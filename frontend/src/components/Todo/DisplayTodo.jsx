@@ -2,7 +2,7 @@ import { Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import SingleTODO from "./SingleTODO";
 
-function DisplayTodo({ dataChanged, setDataChanged }) {
+function DisplayTodo({ dataChanged }) {
     const [data, setData] = useState([]);
     const [counter, setCounter] = useState(0);
 

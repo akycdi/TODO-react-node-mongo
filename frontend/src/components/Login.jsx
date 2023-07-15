@@ -24,6 +24,7 @@ function Login() {
     function loginCallback(response) {
         response.json().then((data) => {
             if (response.ok) {
+                localStorage.setItem("token",data.token)
                 navigate('/todo');
                 console.log(data);
             } else {
