@@ -1,4 +1,3 @@
-let TODO = []
 
 const user = require('../Models/user')
 
